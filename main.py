@@ -2,6 +2,7 @@ import pygame
 import random
 score = 0 
 level = 6
+numofswords = 10
 # Initialise the game
 pygame.init();
 
@@ -45,7 +46,7 @@ swordY = []
 swordX_change = []
 swordY_change = []
 sword_state = []
-for i in range(100): 
+for i in range(numofswords): 
     swordImg.append( pygame.image.load('sword.png'))
     swordX.append( 0)
     swordY.append( 600)
@@ -99,7 +100,7 @@ while running:
                     swordX[counterforsword] = playerX
                     throw(swordX[counterforsword], swordY[counterforsword] , counterforsword)
                     counterforsword+=1
-                    counterforsword%=100
+                    counterforsword%=numofswords
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -124,7 +125,7 @@ while running:
             if enemyX[i] >= 885:
                 enemyX_change[i] = - 0.3
                 enemyY[i] += enemyY_change[i]
-            for j in range (100):     
+            for j in range (numofswords):     
                 isCollided =  checkforcollision(swordX[j] , enemyX[i] , enemyY[i]  , swordY[j])
                 if( isCollided): 
                     enemyX[i] = random.randint(100, 900)
@@ -133,7 +134,7 @@ while running:
                     score+=1
                     sword_state[j] = "ready"
             enemy(enemyX[i], enemyY[i] , i)
-    for i in range (100):
+    for i in range (numofswords):
             if swordY[i] <= 0:
                 swordY[i] = 600
                 sword_state[i] = "ready"
