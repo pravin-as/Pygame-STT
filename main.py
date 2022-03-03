@@ -3,6 +3,7 @@ import random
 score = 0 
 level = 6
 numofswords = 10
+speed=0.2 #enemy speed
 # Initialise the game
 pygame.init();
 
@@ -18,7 +19,8 @@ icon = pygame.image.load("logo.png")
 pygame.display.set_icon((icon))
 
 # Player
-playerImg = pygame.image.load('levi.png')
+playerImg = pygame.image.load('levib.png').convert_alpha()
+playerImg=pygame.transform.scale(playerImg, (100, 150))
 playerX = 512
 playerY = 600
 playerX_change = 0
@@ -115,16 +117,38 @@ while running:
 
    
    
-   
+    
     for i in range(numofenemy):
+            tan=(enemyY[i]-playerY)/ (enemyX[i]-playerX)
+            #tan = l/b
+            #sin= l/h
+            #h=root(l2 +b2)
+            #sin=l/root(l2+b2)
+            #sin=tan/root(tan2+1)
+            #cos=1/root(tan2+1)
+
+            enemyX_change[i]=speed*(1/(tan**2 +1)**0.5)
+            if enemyX[i]>=playerX:
+                enemyX_change[i]=-abs(enemyX_change[i])
+            else:
+                enemyX_change[i]=abs(enemyX_change[i])
+
             enemyX[i] += enemyX_change[i] 
+            enemyY_change[i]=speed*(tan/(tan**2 +1)**0.5)
+            if enemyY[i]>=playerY:
+                enemyY_change[i]=-abs(enemyY_change[i])
+            else:
+                enemyY_change[i]=abs(enemyY_change[i])
+
+            enemyY[i] += enemyY_change[i] 
+            
         
-            if enemyX[i] <= 0:
-                enemyX_change[i] = 0.3
-                enemyY[i] += enemyY_change[i]
-            if enemyX[i] >= 885:
-                enemyX_change[i] = - 0.3
-                enemyY[i] += enemyY_change[i]
+            # if enemyX[i] <= 0:
+            #     enemyX_change[i] = 0.3
+            #     enemyY[i] += enemyY_change[i]
+            # if enemyX[i] >= 885:
+            #     enemyX_change[i] = - 0.3
+            #     enemyY[i] += enemyY_change[i]
             for j in range (numofswords):     
                 isCollided =  checkforcollision(swordX[j] , enemyX[i] , enemyY[i]  , swordY[j])
                 if( isCollided): 
