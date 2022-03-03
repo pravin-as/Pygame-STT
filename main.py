@@ -1,6 +1,7 @@
 import pygame
 import random
-
+score = 0 
+level = 6
 # Initialise the game
 pygame.init();
 
@@ -23,33 +24,54 @@ playerX_change = 0
 playerY_change = 0
 
 # Enemy
-enemyImg = pygame.image.load('titan.jpg')
-enemyX = random.randint(100, 900)
-enemyY = random.randint(50, 500)
-enemyX_change = 0.3
-enemyY_change = 40
+enemyX =  []
+enemyImg =[]
+enemyX = []
+enemyY = []
+enemyX_change = []
+enemyY_change = []
+numofenemy  = level 
+for i in range(numofenemy): 
+        enemyImg.append (pygame.image.load('titan.jpg'))
+        enemyX.append (random.randint(100, 900))
+        enemyY.append (random.randint(50, 500))
+        enemyX_change.append (0.3)
+        enemyY_change.append (40)
 
 # Sword
-swordImg = pygame.image.load('sword.png')
-swordX = 0
-swordY = 600
-swordX_change = 0
-swordY_change = 1
-sword_state = "ready"
+swordImg = []
+swordX = []
+swordY = []
+swordX_change = []
+swordY_change = []
+sword_state = []
+for i in range(100): 
+    swordImg.append( pygame.image.load('sword.png'))
+    swordX.append( 0)
+    swordY.append( 600)
+    swordX_change.append( 0)
+    swordY_change.append( 1)
+    sword_state.append( "ready")
 
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
 
 
-def enemy(x, y):
-    screen.blit(enemyImg, (x, y))
+def enemy( x, y  , i):
+    screen.blit(enemyImg[i], (x, y))
 
-
-def throw(x, y):
+def checkforcollision(x1, x2 , y1 , y2): 
+    Distance = ((x1-x2)**2 + (y1-y2)**2)**0.1
+    if(Distance <=  2): 
+        return  True
+      
+    return False    
+counterforsword  =  0 
+def throw(x, y  , i):
     global sword_state
-    sword_state = "fire"
-    screen.blit(swordImg, (x + 40, y + 40))
+    sword_state[i] = "fire"
+    screen.blit(swordImg[i], (x + 40, y + 40))
 
 
 # Whenever running is true game continues
@@ -69,13 +91,15 @@ while running:
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_LEFT:
-                playerX_change = -0.3
+                playerX_change = -0.8
             if event.key == pygame.K_RIGHT:
-                playerX_change = 0.3
+                playerX_change = 0.8
             if event.key == pygame.K_SPACE:
-                if sword_state == "ready":
-                    swordX = playerX
-                    throw(swordX, swordY)
+                if sword_state[counterforsword] == "ready":
+                    swordX[counterforsword] = playerX
+                    throw(swordX[counterforsword], swordY[counterforsword] , counterforsword)
+                    counterforsword+=1
+                    counterforsword%=100
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -88,23 +112,37 @@ while running:
     if playerX >= 935:
         playerX = 935
 
-    enemyX += enemyX_change
+   
+   
+   
+    for i in range(numofenemy):
+            enemyX[i] += enemyX_change[i] 
+        
+            if enemyX[i] <= 0:
+                enemyX_change[i] = 0.3
+                enemyY[i] += enemyY_change[i]
+            if enemyX[i] >= 885:
+                enemyX_change[i] = - 0.3
+                enemyY[i] += enemyY_change[i]
+            for j in range (100):     
+                isCollided =  checkforcollision(swordX[j] , enemyX[i] , enemyY[i]  , swordY[j])
+                if( isCollided): 
+                    enemyX[i] = random.randint(100, 900)
+                    enemyY[i] = random.randint(50, 500)
+                    swordY[j] = 600
+                    score+=1
+                    sword_state[j] = "ready"
+            enemy(enemyX[i], enemyY[i] , i)
+    for i in range (100):
+            if swordY[i] <= 0:
+                swordY[i] = 600
+                sword_state[i] = "ready"
 
-    if enemyX <= 0:
-        enemyX_change = 0.3
-        enemyY += enemyY_change
-    if enemyX >= 885:
-        enemyX_change = - 0.3
-        enemyY += enemyY_change
-
-    if swordY <= 0:
-        swordY = 600
-        sword_state = "ready"
-
-    if sword_state == "fire":
-        throw(swordX, swordY)
-        swordY -= swordY_change
-
+            if sword_state[i] == "fire":
+                throw(swordX[i], swordY[i] , i)
+                swordY[i] -= swordY_change[i]
+     
+       
     player(playerX, playerY)
-    enemy(enemyX, enemyY)
+   
     pygame.display.update()
