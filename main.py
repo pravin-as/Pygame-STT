@@ -20,9 +20,9 @@ pygame.display.set_icon((icon))
 
 # Player
 playerImg = pygame.image.load('levib.png').convert_alpha()
-playerImg=pygame.transform.scale(playerImg, (100, 150))
+playerImg=pygame.transform.scale(playerImg, (250, 200))
 playerX = 512
-playerY = 600
+playerY = 550
 playerX_change = 0
 playerY_change = 0
 
@@ -49,7 +49,9 @@ swordX_change = []
 swordY_change = []
 sword_state = []
 for i in range(numofswords): 
-    swordImg.append( pygame.image.load('sword.png'))
+    swordImgtemp= pygame.image.load('sword2.png').convert_alpha()
+    swordImgtemp=pygame.transform.scale(swordImgtemp, (50,50))
+    swordImg.append(swordImgtemp)
     swordX.append( 0)
     swordY.append( 600)
     swordX_change.append( 0)
