@@ -102,21 +102,16 @@ while running:
                 playerX_change = -0.8
             if event.key == pygame.K_RIGHT:
                 playerX_change = 0.8
-            if event.key == pygame.K_UP:
-                playerY_change = -0.8
-            if event.key == pygame.K_DOWN:
-                playerY_change = 0.8
             
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 playerX_change = 0
-            if event.key == pygame.K_DOWN  or event.key == pygame.K_UP:
-                    playerY_change = 0
+             
         #handle for the bullets top get fired in anydirection
         if event.type == pygame.MOUSEBUTTONDOWN : 
                 x, y  = pygame.mouse.get_pos()
-                print(x, y) 
+                # print(x, y) 
                 
                 if sword_state[counterforsword] == "ready":
                     swordX[counterforsword] = playerX
@@ -129,17 +124,13 @@ while running:
        
               
     playerX += playerX_change
-    playerY +=  playerY_change
+    
     if playerX <= 0:
         playerX = 0
     if playerX >= 935:
         playerX = 935
 
-    if playerY <= 0:
-        playerY = 0
-    if playerY >= 600:
-        playerY = 600
-
+ 
    
    
     
@@ -184,8 +175,8 @@ while running:
                     sword_state[j] = "ready"
             enemy(enemyX[i], enemyY[i] , i)
     for i in range (numofswords):
-            print(sword_angle[i])
-            print(swordX[i] , swordY[i] , sword_state[i])
+            # print(sword_angle[i])
+            # print(swordX[i] , swordY[i] , sword_state[i])
             dx  = 2.0*math.cos(sword_angle[i])
             dy  = 3.0*math.sin(sword_angle[i])
             swordX[i]+=dx
