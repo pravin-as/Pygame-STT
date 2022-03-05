@@ -1,6 +1,7 @@
 import pygame
 import random
 import math 
+from pygame import mixer
 score = 0 
 level = 6
 numofswords = 10
@@ -18,7 +19,10 @@ background = pygame.image.load("wallpaper.png")
 pygame.display.set_caption("Attack on Titans")
 icon = pygame.image.load("logo.png")
 pygame.display.set_icon((icon))
-
+strin = random.randint(1,2)
+strin = str( str(strin)+".wav")
+mixer.music.load(strin)
+mixer.music.play(-1)
 # Player
 playerImg = pygame.image.load('levib.png').convert_alpha()
 playerImg=pygame.transform.scale(playerImg, (250, 200))
@@ -195,6 +199,10 @@ while running:
                
               
      
+    for j in range (numofenemy ):     
+                isCollided =  checkforcollision(enemyX[j] ,playerX , playerY  , enemyY[j])
+                if( isCollided): 
+                   running = False
        
     player(playerX, playerY)
    
