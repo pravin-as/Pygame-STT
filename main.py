@@ -1,5 +1,7 @@
 import pygame
 import random
+import math 
+from pygame import mixer
 score = 0 
 level = 6
 numofswords = 10
@@ -17,7 +19,10 @@ background = pygame.image.load("wallpaper.png")
 pygame.display.set_caption("Attack on Titans")
 icon = pygame.image.load("logo.png")
 pygame.display.set_icon((icon))
-
+strin = random.randint(1,2)
+strin = str( str(strin)+".wav")
+mixer.music.load(strin)
+mixer.music.play(-1)
 # Player
 playerImg = pygame.image.load('levib.png').convert_alpha()
 playerImg=pygame.transform.scale(playerImg, (250, 200))
@@ -48,6 +53,7 @@ swordY = []
 swordX_change = []
 swordY_change = []
 sword_state = []
+sword_angle = []
 for i in range(numofswords): 
     swordImgtemp= pygame.image.load('sword2.png').convert_alpha()
     swordImgtemp=pygame.transform.scale(swordImgtemp, (50,50))
@@ -57,6 +63,7 @@ for i in range(numofswords):
     swordX_change.append( 0)
     swordY_change.append( 1)
     sword_state.append( "ready")
+    sword_angle.append(0)
 
 
 def player(x, y):
@@ -92,31 +99,42 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+       
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_LEFT:
                 playerX_change = -0.8
             if event.key == pygame.K_RIGHT:
                 playerX_change = 0.8
-            if event.key == pygame.K_SPACE:
-                if sword_state[counterforsword] == "ready":
-                    swordX[counterforsword] = playerX
-                    throw(swordX[counterforsword], swordY[counterforsword] , counterforsword)
-                    counterforsword+=1
-                    counterforsword%=numofswords
+            
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 playerX_change = 0
-
+             
+        #handle for the bullets top get fired in anydirection
+        if event.type == pygame.MOUSEBUTTONDOWN : 
+                x, y  = pygame.mouse.get_pos()
+                # print(x, y) 
+                
+                if sword_state[counterforsword] == "ready":
+                    swordX[counterforsword] = playerX
+                    swordY[counterforsword] = playerY
+                    sword_angle[counterforsword] = math.atan2(y-playerY , x- playerX)
+                    # print(sword_angle[counterforsword])
+                    throw(swordX[counterforsword], swordY[counterforsword] , counterforsword)
+                    counterforsword+=1
+                    counterforsword%=numofswords
+       
+              
     playerX += playerX_change
-
+    
     if playerX <= 0:
         playerX = 0
     if playerX >= 935:
         playerX = 935
 
+ 
    
    
     
@@ -161,14 +179,30 @@ while running:
                     sword_state[j] = "ready"
             enemy(enemyX[i], enemyY[i] , i)
     for i in range (numofswords):
-            if swordY[i] <= 0:
-                swordY[i] = 600
+            # print(sword_angle[i])
+            # print(swordX[i] , swordY[i] , sword_state[i])
+            dx  = 2.0*math.cos(sword_angle[i])
+            dy  = 3.0*math.sin(sword_angle[i])
+            swordX[i]+=dx
+            swordY[i]+=dy
+            if swordX[i] <= 0 or swordX[i] >= 900 : 
+                swordY[i] = playerY 
+                sword_angle[i] =  0
                 sword_state[i] = "ready"
-
+            if swordY[i] <= 0 or swordY[i] >=600 :
+                swordY[i] = playerY
+                sword_angle[i] =  0
+                sword_state[i] = "ready"
+            
             if sword_state[i] == "fire":
                 throw(swordX[i], swordY[i] , i)
-                swordY[i] -= swordY_change[i]
+               
+              
      
+    for j in range (numofenemy ):     
+                isCollided =  checkforcollision(enemyX[j] ,playerX , playerY  , enemyY[j])
+                if( isCollided): 
+                   running = False
        
     player(playerX, playerY)
    
