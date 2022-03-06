@@ -27,7 +27,7 @@ mixer.music.play(-1)
 playerImg = pygame.image.load('levib.png').convert_alpha()
 playerImg=pygame.transform.scale(playerImg, (250, 200))
 playerX = 512
-playerY = 550
+playerY = 200
 playerX_change = 0
 playerY_change = 0
 
@@ -39,10 +39,16 @@ enemyY = []
 enemyX_change = []
 enemyY_change = []
 numofenemy  = level 
+
+       
+
 for i in range(numofenemy): 
+        
         enemyImg.append (pygame.image.load('titan.jpg'))
-        enemyX.append (random.randint(100, 900))
-        enemyY.append (random.randint(50, 500))
+        localX=[random.randint(0, 100),random.randint(900, 1000)]
+        localY=[random.randint(0, 50),random.randint(700,740 )]
+        enemyX.append (localX[random.randint(0, 1)])
+        enemyY.append (localY[random.randint(0, 1)])
         enemyX_change.append (0.3)
         enemyY_change.append (40)
 
@@ -66,6 +72,10 @@ for i in range(numofswords):
     sword_angle.append(0)
 
 
+myfont=pygame.font.Font("freesansbold.ttf",30)
+def showscore(x,y):
+	scorernd = myfont.render("Score:" + str(score),True, (255,255,255))
+	screen.blit(scorernd,(x,y))
 def player(x, y):
     screen.blit(playerImg, (x, y))
 
@@ -86,6 +96,12 @@ def throw(x, y  , i):
     screen.blit(swordImg[i], (x + 40, y + 40))
 
 
+def spawn_enemy(i):
+        localX=[random.randint(0, 100),random.randint(900, 1000)]
+        localY=[random.randint(0, 50),random.randint(700,740 )]
+        enemyX[i]= (localX[random.randint(0, 1)])
+        enemyY[i]= (localY[random.randint(0, 1)])
+ 
 # Whenever running is true game continues
 # Running is false when quit button is placed.
 running = True
@@ -102,20 +118,20 @@ while running:
        
         if event.type == pygame.KEYDOWN:
     
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 playerX_change = -0.8
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 playerX_change = 0.8
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_UP or event.key== pygame.K_w:
                 playerY_change = -0.8
-            if event.key == pygame.K_DOWN:
+            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 playerY_change = 0.8
             
 
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 playerX_change = 0
-            if event.key == pygame.K_DOWN  or event.key == pygame.K_UP:
+            if event.key == pygame.K_DOWN or event.key == pygame.K_s or event.key == pygame.K_UP or event.key == pygame.K_w:
                     playerY_change = 0
 
         
@@ -184,8 +200,7 @@ while running:
             for j in range (numofswords):     
                 isCollided =  checkforcollision(swordX[j] , enemyX[i] , enemyY[i]  , swordY[j])
                 if( isCollided): 
-                    enemyX[i] = random.randint(100, 900)
-                    enemyY[i] = random.randint(50, 500)
+                    spawn_enemy(i)
                     swordY[j] = 600
                     score+=1
                     sword_state[j] = "ready"
@@ -217,5 +232,6 @@ while running:
                    running = False
        
     player(playerX, playerY)
+    showscore(10,10)
    
     pygame.display.update()
