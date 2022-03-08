@@ -1,3 +1,4 @@
+
 import pygame
 import random
 import math 
@@ -101,11 +102,37 @@ def spawn_enemy(i):
         localY=[random.randint(0, 50),random.randint(700,740 )]
         enemyX[i]= (localX[random.randint(0, 1)])
         enemyY[i]= (localY[random.randint(0, 1)])
+
+over_font = pygame.font.Font('freesansbold.ttf', 90)
+#Game over text
+def game_over_screen():
+    over_text = over_font.render("GAME OVER", True, (255, 255, 255))
+    screen.blit(over_text, (250, 300))
+
+game_over_decider = False
  
 # Whenever running is true game continues
 # Running is false when quit button is placed.
 running = True
 while running:
+
+    if game_over_decider == True:
+        game_over_screen()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+       
+        if event.type == pygame.KEYDOWN:
+    
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                running = False
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                running = False
+            if event.key == pygame.K_UP or event.key== pygame.K_w:
+                running = False
+            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                running = False
+        continue
 
     # filling colour in game
     screen.fill((0, 0, 0))
@@ -217,7 +244,7 @@ while running:
                 sword_angle[i] =  0
                 sword_state[i] = "ready"
             if swordY[i] <= 0 or swordY[i] >=600 :
-                swordY[i] = playerY
+                swordY[i] = playerY 
                 sword_angle[i] =  0
                 sword_state[i] = "ready"
             
@@ -229,7 +256,11 @@ while running:
     for j in range (numofenemy ):     
                 isCollided =  checkforcollision(enemyX[j] ,playerX , playerY  , enemyY[j])
                 if( isCollided): 
-                   running = False
+                    game_over_screen()
+                    game_over_decider = True
+                #    enemyX = 1000
+                #    enemyY = 700
+                #    running = False
        
     player(playerX, playerY)
     showscore(10,10)
