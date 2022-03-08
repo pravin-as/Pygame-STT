@@ -103,11 +103,18 @@ def spawn_enemy(i):
         enemyX[i]= (localX[random.randint(0, 1)])
         enemyY[i]= (localY[random.randint(0, 1)])
 
-over_font = pygame.font.Font('freesansbold.ttf', 90)
+over_font = pygame.font.Font('freesansbold.ttf', 50)
+over_font2 = pygame.font.Font('freesansbold.ttf', 40)
 #Game over text
 def game_over_screen():
-    over_text = over_font.render("GAME OVER", True, (255, 255, 255))
-    screen.blit(over_text, (250, 300))
+    over_text = over_font.render("GAME OVER!!!", True, (255, 255, 255))
+    screen.blit(over_text, (300, 300))
+    game_over_key()
+
+
+def game_over_key():
+    over_text = over_font2.render("Press up To Restart or down to End game", True, (255, 255, 255))
+    screen.blit(over_text, (100, 400))
 
 game_over_decider = False
  
@@ -124,15 +131,20 @@ while running:
        
         if event.type == pygame.KEYDOWN:
     
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                running = False
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                running = False
             if event.key == pygame.K_UP or event.key== pygame.K_w:
-                running = False
+                running = True
+                game_over_decider = False
+                playerX = 0
+                playery = 700
+                score = 0
+                for j in range(numofenemy): 
+                    enemyY[j] = 700 - playerY
+
+
             if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 running = False
         continue
+            
 
     # filling colour in game
     screen.fill((0, 0, 0))
